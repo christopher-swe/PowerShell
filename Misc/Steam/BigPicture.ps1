@@ -26,6 +26,13 @@ $AudiOutPutSteam = "Samsung-C"
 $AduiOutPutDefault = "Speakers"
 #########################################################
 
+if ($PSVersionTable.PSVersion.Major -le "4"){
+    Write-Warning "[INFO] PowerShell $($PSVersionTable.PSVersion.Major) is not supported, please update to PowerShell 5."
+    Write-host -ForegroundColor CYAN "[INFO] https://www.microsoft.com/en-us/download/details.aspx?id=50395"
+    Pause
+    Exit
+}
+
 $SteamFolder = (Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | where {$_.DisplayName -eq "Steam"}).UninstallString -replace "uninstall.exe",""
 if ($SteamFolder.Length -le 1) {
     Write-Warning "[INFO] Can't find the path to your Steam-folder, is it installed?"
@@ -40,6 +47,9 @@ Write-host -ForegroundColor CYAN "[INFO] Checking if NirCmd exist."
 $TestNirCmd = Test-Path "$env:TEMP\NirCmd\NirCmd.exe"
 if ($TestNirCmd -eq $false) {
     Write-host -ForegroundColor CYAN "[INFO] Can't find NirCmd."
+    Write-Warning "[INFO] Downloading NirCmd from http://www.nirsoft.net/utils/nircmd.zip"
+    Write-Warning "[INFO] Press CTRL+C you want to abort the download, or press Enter to continue." 
+    Pause
     Write-host -ForegroundColor CYAN "[INFO] Downloading NirCmd, please wait..."
     Invoke-WebRequest -Uri http://www.nirsoft.net/utils/nircmd.zip -OutFile "$env:TEMP\nircmd.zip"
     Write-host -ForegroundColor CYAN "[INFO] Extracting NirCmd.exe to $env:TEMP\NirCmd"
